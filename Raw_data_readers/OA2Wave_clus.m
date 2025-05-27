@@ -32,6 +32,13 @@ end
 % Alpha Omega channel types you care about – adapt if needed
 chanTypes = {'CSPK', 'CLFP'};        
 
+% make subfolder for each chanTypes
+for ct = 1:numel(chanTypes)
+    channelType = chanTypes{ct};
+    subfolder = fullfile(saveFolder, channelType);
+    mkdir(subfolder)
+end
+
 % MER range in uV (used to guess gain if absent)
 MER_range = [2, 13];
 
@@ -103,13 +110,13 @@ for f = 1:numel(files)
         % ---- write CSV (optional but keeps parity with Python) ----------
         base   = erase(files(f).name, '.mat');
         csvOut = sprintf('%s_%s_%s.csv', patientName, base, channelType);
-        csvOut = fullfile(saveFolder, csvOut);
+        csvOut = fullfile(saveFolder, channelType, csvOut);
         writetable(table(time, voltage), csvOut);
         fprintf('      saved  %s\n', csvOut);
 
         % ---- Wave_Clus MAT ----------------------------------------------
         wcMat = sprintf('%s_%s_%s_WC.mat', patientName, base, channelType);
-        wcMat = fullfile(saveFolder, wcMat);
+        wcMat = fullfile(saveFolder, channelType, wcMat);
         data  = voltage.';        % Wave_Clus wants samples×channels
         save(wcMat, 'data', 'sr', '-mat');
         fprintf('      saved  %s\n', wcMat);
