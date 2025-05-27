@@ -1,18 +1,16 @@
-function merStruct = OA2Wave_clus(matFolder, saveFolder)
+function OA2Wave_clus(matFolder, saveFolder)
 % OA2Wave_clus  Convert Alpha-Omega *.mat recordings to Wave_Clus format
 %
-%   merStruct = OA2Wave_clus(matFolder, saveFolder)
+%   OA2Wave_clus(matFolder, saveFolder)
 %
 %   • matFolder   – folder that contains the .mat files exported by
 %                   NeuroOmega / Alpha Omega (one depth sweep per file).
 %   • saveFolder  – destination folder for
 %                     ①  *.mat files compatible with Wave_Clus
 %                     ②  per-channel type CSV files (time / voltage)
+%                     (optional)
 %
-%   The function returns a struct array merStruct with one element per
-%   depth-sweep file, containing metadata and the scaled voltage trace.
-%
-%   Wave_Clus expects two variables inside each *.mat:
+%   Wave_Clus expects at least two variables inside each *.mat:
 %       data   : [samples × channels] int16 or double   (raw or µV)
 %       sr     : scalar                                 (Hz)
 %
@@ -30,7 +28,9 @@ if ~isfolder(saveFolder)
 end
 
 % Alpha Omega channel types you care about – adapt if needed
-chanTypes = {'CSPK', 'CLFP'};        
+chanTypes = {'CSPK', 'CLFP'};
+
+save_csv = false;
 
 % make subfolder for each chanTypes
 for ct = 1:numel(chanTypes)
@@ -49,7 +49,7 @@ if isempty(files)
 end
 
 % reserve output struct
-merStruct = struct([]);
+% merStruct = struct([]);
 
 %% loop over files ---------------------------------------------------------
 for f = 1:numel(files)
@@ -67,7 +67,7 @@ for f = 1:numel(files)
 
     % container for this depth
     fileEntry = struct('filename', files(f).name, ...
-                       'channels',   struct);
+        'channels',   struct);
 
     % Iterate over each type (MER, LFP, …)
     for ct = 1:numel(chanTypes)
@@ -90,9 +90,9 @@ for f = 1:numel(files)
             fprintf('Gain key missing → Guess gain')
             gain_range = mean(abs(adArray)) * bitResolution./ MER_range;
             if max(gain_range) < 500  % Neuro Omega
-                gain = 20;        
+                gain = 20;
             elseif min(gain_range) > 500 % NeuroNav
-                gain = 1385; 
+                gain = 1385;
             else
                 gain = 1; % default
             end
@@ -109,52 +109,55 @@ for f = 1:numel(files)
 
         % ---- write CSV (optional but keeps parity with Python) ----------
         base   = erase(files(f).name, '.mat');
-        csvOut = sprintf('%s_%s_%s.csv', patientName, base, channelType);
-        csvOut = fullfile(saveFolder, channelType, csvOut);
-        writetable(table(time, voltage), csvOut);
-        fprintf('      saved  %s\n', csvOut);
-
-        % ---- Wave_Clus MAT ----------------------------------------------
-        wcMat = sprintf('%s_%s_%s_WC.mat', patientName, base, channelType);
-        wcMat = fullfile(saveFolder, channelType, wcMat);
-        data  = voltage.';        % Wave_Clus wants samples×channels
-        save(wcMat, 'data', 'sr', '-mat');
-        fprintf('      saved  %s\n', wcMat);
+        if save_csv
+            csvOut = sprintf('%s_%s_%s.csv', patientName, base, channelType);
+            csvOut = fullfile(saveFolder, channelType, csvOut);
+            writetable(table(time, voltage), csvOut);
+            fprintf('      saved  %s\n', csvOut);
+        end
 
         % ---- populate output struct -------------------------------------
+        ch.base   = base;
         ch.side   = base(1);
         ch.tract  = base(2:3);
         ch.depth  = base(5:end-4);
         ch.time           = time;
-        ch.voltage        = voltage;
+        ch.data        = voltage;
         ch.bitResolution  = bitResolution;
         ch.gain           = gain;
         ch.sr             = sr;
         ch.unit_sr        = 'Hz';
         ch.unit_time      = 's';
         ch.unit_voltage   = 'uV';
-        fileEntry.channels.(channelType) = ch;
+        % fileEntry.channels.(channelType) = ch;
+
+        % ---- Wave_Clus MAT ----------------------------------------------
+        wcMat = sprintf('%s_%s_%s_WC.mat', patientName, base, channelType);
+        wcMat = fullfile(saveFolder, channelType, wcMat);
+        save(wcMat, '-struct', 'ch', '-mat');
+        fprintf('      saved  %s\n', wcMat);
+
     end
 
-    merStruct = [merStruct; fileEntry]; %#ok<AGROW>
+    % merStruct = [merStruct; fileEntry]; %#ok<AGROW>
 end
 
 fprintf('\nDone.  %d files processed.\n', numel(files));
 
 % -------------------------------------------------------------------------
-function key = findFirstKey(list, regexPattern)
-% helper: return first fieldname that matches regex, or [] if none
-    idx = find(~cellfun(@isempty, regexp(list, regexPattern, 'once')), 1);
-    if isempty(idx)
-        key = [];
-    else
-        key = list{idx};
+    function key = findFirstKey(list, regexPattern)
+        % helper: return first fieldname that matches regex, or [] if none
+        idx = find(~cellfun(@isempty, regexp(list, regexPattern, 'once')), 1);
+        if isempty(idx)
+            key = [];
+        else
+            key = list{idx};
+        end
     end
-end
 % -------------------------------------------------------------------------
 
 % save merStruct
-patientMat = sprintf('%s.mat', patientName);
-patientMat = fullfile(saveFolder, patientMat);
-save(patientMat, 'merStruct', '-mat');
+% patientMat = sprintf('%s.mat', patientName);
+% patientMat = fullfile(saveFolder, patientMat);
+% save(patientMat, 'merStruct', '-mat');
 end

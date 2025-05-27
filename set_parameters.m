@@ -74,7 +74,7 @@ par.w_post = 44;                     % number of post-event data points stored (
  
 par.alignment_window = 10;           % number of points around the sample expected to be the maximum 
  
-par.stdmin = 5;                      % minimum threshold for detection 
+par.stdmin = 4.5;                      % minimum threshold for detection 
  
 par.stdmax = 50;                     % maximum threshold for detection 
  
@@ -167,6 +167,7 @@ par.permut = 'y';                   % for selection of random 'par.max_spk' spik
 par.nbins = 100;                    % # of bins for the ISI histograms 
  
 par.bin_step = 1;                   % percentage number of bins to plot 
+ 
  
  
  

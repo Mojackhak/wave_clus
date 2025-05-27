@@ -82,10 +82,12 @@ function batch_filter(matFolder, saveFolder, bandpass)
         % --------------------------------------------------------------
         [~, name] = fileparts(files(k).name);
         outFile = fullfile(saveFolder, sprintf('%s_filt.mat', name));
-        data = data_filt; % keep same variable names
-        save(outFile, 'data', 'sr', '-mat');
+        S.data = data_filt;
+        S.bandpass = bandpass;
+        save(outFile, '-struct', 'S', '-mat');
 
         fprintf(' saved → %s\n', outFile);
+
     end
 end
 % ======================================================================
