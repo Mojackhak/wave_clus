@@ -114,7 +114,7 @@ par.interpolation = 'y';             % interpolation with cubic splines (default
  
 % FEATURES PARAMETERS 
  
-par.min_inputs = 10;         % number of inputs to the clustering 
+par.min_inputs = 20;         % number of inputs to the clustering 
  
 par.max_inputs = 0.75;       % number of inputs to the clustering. if < 1 it will the that proportion of the maximum. 
  
@@ -169,6 +169,7 @@ par.nbins = 100;                    % # of bins for the ISI histograms
 par.bin_step = 1;                   % percentage number of bins to plot 
  
 par.min_isi = 2;                    % calculate the number of ISIs < min_isi ms 
+ 
  
  
  
