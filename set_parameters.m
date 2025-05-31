@@ -42,7 +42,7 @@ par.SWCycles = 100;                  % SPC iterations for each temperature (defa
  
 par.KNearNeighb = 11;                % number of nearest neighbors for SPC 
  
-par.min_clus = 10;                   % minimum size of a cluster (default 60) 
+par.min_clus = 20;                   % minimum size of a cluster (default 20) 
  
 par.randomseed = 0;                  % if 0, random seed is taken as the clock value (default 0) 
  
@@ -80,7 +80,7 @@ par.stdmax = 50;                     % maximum threshold for detection
  
 par.detect_fmin = 300;               % high pass filter for detection 
  
-par.detect_fmax = 3000;              % low pass filter for detection (default 1000) 
+par.detect_fmax = 3000;              % low pass filter for detection (default 3000) 
  
 par.detect_order = 4;                % filter order for detection. 0 to disable the filter. 
  
@@ -104,7 +104,7 @@ par.detection = 'pos';               % type of threshold ('pos','neg','both')
  
 par.int_factor = 5;                  % interpolation factor 
  
-par.interpolation = 'y';             % interpolation with cubic splines (default) 
+par.interpolation = 'y';             % interpolation with cubic splines (default 'y') 
  
 % par.interpolation = 'n'; 
  
@@ -114,7 +114,7 @@ par.interpolation = 'y';             % interpolation with cubic splines (default
  
 % FEATURES PARAMETERS 
  
-par.min_inputs = 20;         % number of inputs to the clustering 
+par.min_inputs = 10;         % number of inputs to the clustering 
  
 par.max_inputs = 0.75;       % number of inputs to the clustering. if < 1 it will the that proportion of the maximum. 
  
@@ -169,31 +169,6 @@ par.nbins = 100;                    % # of bins for the ISI histograms
 par.bin_step = 1;                   % percentage number of bins to plot 
  
 par.min_isi = 2;                    % calculate the number of ISIs < min_isi ms 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  
  
  
