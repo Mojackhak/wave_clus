@@ -84,3 +84,5 @@ par.permut = 'y';                   % for selection of random 'par.max_spk' spik
 % HISTOGRAM PARAMETERS
 par.nbins = 100;                    % # of bins for the ISI histograms
 par.bin_step = 1;                   % percentage number of bins to plot
+par.min_isi = 3;                    % calculate the number of ISIs < min_isi ms  
+ 

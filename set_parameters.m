@@ -168,6 +168,32 @@ par.nbins = 100;                    % # of bins for the ISI histograms
  
 par.bin_step = 1;                   % percentage number of bins to plot 
  
+par.min_isi = 2;                    % calculate the number of ISIs < min_isi ms 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  

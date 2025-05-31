@@ -363,7 +363,8 @@ if make_plots
         xlim([par.mintemp, par.maxtemp])
         subplot(3,5,6)
         hold on
-
+        
+        min_isi = par.min_isi;
         class0 = find(classes==0);
             max_spikes=min(length(class0),par.max_spikes_plot);
             plot(spikes(class0(1:max_spikes),:)','k');
@@ -380,7 +381,7 @@ if make_plots
             bar(c(1:end-1),n(1:end-1))
             xlim([0 100])
             xlabel('ISI (ms)');
-            title([num2str(nnz(xa<3)) ' in < 3ms']);
+            title([num2str(nnz(xa<min_isi)) ' in < '  num2str(min_isi)  ' ms']);
 
 
 
@@ -392,7 +393,7 @@ if make_plots
             max_spikes=min(length(class),par.max_spikes_plot);
             plot(spikes(class(1:max_spikes),:)','color',color(mod(i-1,maxc)+1,:));
             xlim([1 size(spikes,2)]);
-
+            min_isi = par.min_isi;
             if i<=3
                 subplot(3,5,6+i);
                 hold on
@@ -407,7 +408,7 @@ if make_plots
                 bar(c(1:end-1),n(1:end-1))
                 xlim([0 100])
                 xlabel('ISI (ms)');
-                title([num2str(nnz(xa<3)) ' in < 3ms']);
+                title([num2str(nnz(xa<min_isi)) ' in < '  num2str(min_isi)  ' ms']);
 
             elseif i<=8
             	  set(0, 'CurrentFigure', curr_fig2)
@@ -424,7 +425,7 @@ if make_plots
                 bar(c(1:end-1),n(1:end-1))
                 xlim([0 100])
                 xlabel('ISI (ms)');
-                title([num2str(nnz(xa<3)) ' in < 3ms']);
+                title([num2str(nnz(xa<min_isi)) ' in < '  num2str(min_isi)  ' ms']);
             end
         end
         numclus = max(classes);

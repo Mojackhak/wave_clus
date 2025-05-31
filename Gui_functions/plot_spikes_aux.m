@@ -56,8 +56,9 @@ ylim(sp_axes, [ymin ymax]);
 
 isi_ax = eval(['handles.isi' num2str(axes_nr-1)]);
 times = diff(spk_times(class_to_plot));
-% Calculates # ISIs < 3ms  
-multi_isi = nnz(times<3); 
+% Calculates # ISIs < min_isi ms  
+min_isi = par.min_isi;
+multi_isi = nnz(times<min_isi); 
 % Builds and plots the histogram
 try
     xlim(isi_ax,'manual');
@@ -65,7 +66,7 @@ try
     bar(isi_ax, X(1:end-1),N(1:end-1))
     eval(['xlim(isi_ax, [0 par.nbins' num2str(axes_nr-1) ']);']);
     %eval(['set(get(gca,''children''),''facecolor'',''' colors(axes_nr) ''',''edgecolor'',''' colors(axes_nr) ''',''linewidth'',0.01);']);  %  (FC) why is this commented?
-    title(isi_ax, [num2str(multi_isi) ' in < 3ms'])
+    title(isi_ax, [num2str(multi_isi) ' in < '  num2str(min_isi)  ' ms'])
     xlabel(isi_ax, 'ISI (ms)');
 catch
     warning(['Error in the ISI plot of the Cluster ' num2str(axes_nr-1)] )
